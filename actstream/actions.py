@@ -12,7 +12,7 @@ except ImportError:
     now = datetime.datetime.now
 
 
-def follow(user, obj, send_action=True, actor_only=True):
+def follow(user, obj, send_action=True, actor_only=True, type=""):
     """
     Creates a relationship allowing the object's activities to appear in the
     user's stream.
@@ -37,7 +37,8 @@ def follow(user, obj, send_action=True, actor_only=True):
     follow, created = Follow.objects.get_or_create(user=user,
         object_id=obj.pk,
         content_type=ContentType.objects.get_for_model(obj),
-        actor_only=actor_only)
+        actor_only=actor_only,
+        type=type)
     if send_action and created:
         action.send(user, verb=_('started following'), target=obj)
     return follow

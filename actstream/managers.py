@@ -58,7 +58,7 @@ class ActionManager(GFKManager):
         )
 
     @stream
-    def user(self, object, **kwargs):
+    def user(self, object, types=None, **kwargs):
         """
         Stream of most recent actions by objects that the passed User object is
         following.
@@ -69,7 +69,13 @@ class ActionManager(GFKManager):
         actors_by_content_type = defaultdict(lambda: [])
         others_by_content_type = defaultdict(lambda: [])
 
-        follow_gfks = Follow.objects.filter(user=object).values_list(
+        follows = Follow.objects.filter(user=object)
+        if types:
+            typefilter = Q()
+            for type in types:
+                typefilter = typefilter | Q(type=type)
+            follows = follows.filter(typefilter)
+        follow_gfks = follows.values_list(
             'content_type_id', 'object_id', 'actor_only')
 
         if not follow_gfks:

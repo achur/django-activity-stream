@@ -30,6 +30,7 @@ class Follow(models.Model):
     follow_object = generic.GenericForeignKey()
     actor_only = models.BooleanField("Only follow actions where the object is "
         "the target.", default=True)
+    type = models.CharField(max_length=255, default="")
     objects = managers.FollowManager()
 
     class Meta:
